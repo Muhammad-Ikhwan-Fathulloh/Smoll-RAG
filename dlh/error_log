@@ -1,0 +1,4 @@
+[12-Mar-2019 20:29:53 Asia/Jakarta] PHP Parse error:  syntax error, unexpected T_CATCH in /home/maxilaba/silh.mma-solutions.co.id/application/controllers/backend/ebook.php on line 152
+[10-Apr-2019 11:00:03 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '[', expecting ',' or ';' in /home/maxilaba/silh.mma-solutions.co.id/application/views/backend/related_link_category/edit.php on line 21
+[10-Apr-2019 11:01:36 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '[', expecting ',' or ';' in /home/maxilaba/silh.mma-solutions.co.id/application/views/backend/related_link_category/edit.php on line 21
+[23-Apr-2019 15:51:41 Asia/Jakarta] PHP Parse error:  syntax error, unexpected '}' in /home/maxilaba/silh.mma-solutions.co.id/application/controllers/backend/download.php on line 281
