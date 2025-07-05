@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  vllm:
+    build: .
+    image: vllm_server:latest
+    ports:
+      - "8000:8000"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 24G
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+    restart: always
