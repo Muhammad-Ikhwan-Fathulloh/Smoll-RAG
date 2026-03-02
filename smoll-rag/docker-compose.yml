@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  db:
+    image: ankane/pgvector:latest
+    container_name: pgvector_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    container_name: pgweb_ui
+    ports:
+      - "8081:8081"
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/mydatabase?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  rag-api:
+    build: .
+    container_name: rag_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=mydatabase
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - MODEL_NAME=HuggingFaceTB/SmolLM2-135M-Instruct
+      - MODEL_CACHE_DIR=/app/models
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - TOP_K=3
+      - SIMILARITY_THRESHOLD=0.5
+      - MAX_NEW_TOKENS=256
+      - TEMPERATURE=0.7
+      - USE_GPU=true
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ~/.cache/huggingface:/root/.cache/huggingface  # Cache HuggingFace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
